@@ -1,6 +1,6 @@
 # /bin/env python
 """
-pySLSQP - A variation of the pySLSQP wrapper specificially designed to
+pySLSQP - A variation of the pySLSQP wrapper specifically designed to
 work with sparse optimization problems.
 """
 # =============================================================================
@@ -86,9 +86,9 @@ class SLSQP(Optimizer):
             to be solved by the optimizer
 
         sens : str or python Function.
-            Specifiy method to compute sensitivities. To
-            explictly use pyOptSparse gradient class to do the
-            derivatives with finite differenes use \'FD\'. \'sens\'
+            Specify method to compute sensitivities. To
+            explicitly use pyOptSparse gradient class to do the
+            derivatives with finite differences use \'FD\'. \'sens\'
             may also be \'CS\' which will cause pyOptSpare to compute
             the derivatives using the complex step method. Finally,
             \'sens\' may be a python function handle which is expected
@@ -111,7 +111,7 @@ class SLSQP(Optimizer):
 
         hotStart : str
             File name of the history file to "replay" for the
-            optimziation.  The optimization problem used to generate
+            optimization.  The optimization problem used to generate
             the history file specified in \'hotStart\' must be
             **IDENTICAL** to the currently supplied \'optProb\'. By
             identical we mean, **EVERY SINGLE PARAMETER MUST BE
@@ -120,8 +120,8 @@ class SLSQP(Optimizer):
             gradient evaluations revert back to normal evaluations.
 
         storeSens : bool
-            Flag sepcifying if sensitivities are to be stored in hist.
-            This is necessay for hot-starting only.
+            Flag specifying if sensitivities are to be stored in hist.
+            This is necessary for hot-starting only.
             """
 
         self.callCounter = 0

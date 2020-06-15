@@ -1,3 +1,39 @@
+C
+C      ALGORITHM 733, COLLECTED ALGORITHMS FROM ACM.
+C      TRANSACTIONS ON MATHEMATICAL SOFTWARE,
+C      VOL. 20, NO. 3, SEPTEMBER, 1994, PP. 262-281.
+C      https://doi.org/10.1145/192115.192124
+C
+C
+C      https://web.archive.org/web/20170106155705/http://permalink.gmane.org/gmane.comp.python.scientific.devel/6725
+C      ------
+C      From: Deborah Cotton <cotton@hq.acm.org>
+C      Date: Fri, 14 Sep 2007 12:35:55 -0500
+C      Subject: RE: Algorithm License requested
+C      To: Alan Isaac
+C
+C      Prof. Issac,
+C
+C      In that case, then because the author consents to [the ACM] releasing
+C      the code currently archived at http://www.netlib.org/toms/733 under the
+C      BSD license, the ACM hereby releases this code under the BSD license.
+C
+C      Regards,
+C
+C      Deborah Cotton, Copyright & Permissions
+C      ACM Publications
+C      2 Penn Plaza, Suite 701**
+C      New York, NY 10121-0701
+C      permissions@acm.org
+C      212.869.7440 ext. 652
+C      Fax. 212.869.0481
+C      ------
+C
+
+************************************************************************
+*                              optimizer                               *
+************************************************************************
+      
       SUBROUTINE SLSQP (M,MEQ,LA,N,X,XL,XU,F,C,G,A,ACC,ITER,
      1     IPRINT,IOUT,IFILE,MODE,W,L_W,JW,L_JW,NFUNC,NGRAD,
      2     SLFUNC,SLGRAD)
@@ -40,7 +76,9 @@ C*  * X()            X() STORES THE CURRENT ITERATE OF THE N VECTOR X  *
 C*                   ON ENTRY X() MUST BE INITIALIZED. ON EXIT X()     *
 C*                   STORES THE SOLUTION VECTOR X IF MODE = 0.         *
 C*    XL()           XL() STORES AN N VECTOR OF LOWER BOUNDS XL TO X.  *
+C*                   ELEMENTS MAY BE NAN TO INDICATE NO LOWER BOUND.   *
 C*    XU()           XU() STORES AN N VECTOR OF UPPER BOUNDS XU TO X.  *
+C*                   ELEMENTS MAY BE NAN TO INDICATE NO UPPER BOUND.   *
 C*    F              IS THE VALUE OF THE OBJECTIVE FUNCTION.           *
 C*    C()            C() STORES THE M VECTOR C OF CONSTRAINTS,         *
 C*                   EQUALITY CONSTRAINTS (IF ANY) FIRST.              *
@@ -75,7 +113,7 @@ C*                   ON EXIT : REQUIRED ACCURACY FOR SOLUTION OBTAINED *
 C*                1: FUNCTION EVALUATION, (F&C)                        *
 C*                                                                     *
 C*                   FAILURE MODES:                                    *
-C*                2: NUMBER OF EQUALITY CONTRAINTS LARGER THAN N       *
+C*                2: NUMBER OF EQUALITY CONSTRAINTS LARGER THAN N       *
 C*                3: MORE THAN 3*N ITERATIONS IN LSQ SUBPROBLEM        *
 C*                4: INEQUALITY CONSTRAINTS INCOMPATIBLE               *
 C*                5: SINGULAR MATRIX E IN LSQ SUBPROBLEM               *
@@ -161,7 +199,7 @@ C*  which should be referenced if the user publishes results of SLSQP  *
 C*                                                                     *
 C*  DATE:           APRIL - OCTOBER, 1981.                             *
 C*  STATUS:         DECEMBER, 31-ST, 1984.                             *
-C*  STATUS:         MARCH   , 21-ST, 1987, REVISED TO FORTAN 77        *
+C*  STATUS:         MARCH   , 21-ST, 1987, REVISED TO FORTRAN 77        *
 C*  STATUS:         MARCH   , 20-th, 1989, REVISED TO MS-FORTRAN       *
 C*  STATUS:         APRIL   , 14-th, 1989, HESSE   in-line coded       *
 C*  STATUS:         FEBRUARY, 28-th, 1991, FORTRAN/2 Version 1.04      *

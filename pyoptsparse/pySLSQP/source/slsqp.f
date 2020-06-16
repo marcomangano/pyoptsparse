@@ -34,9 +34,11 @@ C
 *                              optimizer                               *
 ************************************************************************
       
-      SUBROUTINE SLSQP (M,MEQ,LA,N,X,XL,XU,F,C,G,A,ACC,ITER,
-     1     IPRINT,IOUT,IFILE,MODE,W,L_W,JW,L_JW,NFUNC,NGRAD,
-     2     SLFUNC,SLGRAD)
+      SUBROUTINE SLSQP (M, MEQ, LA, N, X, XL, XU, F, C, G, A, ACC, ITER,
+     1     IPRINT, IOUT, IFILE, MODE, W, L_W, JW, L_JW, NFUNC, NGRAD,
+     2     ALPHA, F0, GS, H1, H2, H3, H4, T, T0, TOL,
+     3     IEXACT, INCONS, IRESET, ITERMIX, LINE, 
+     4     N1, N2, N3,SLFUNC, SLGRAD)
 
 C   SLSQP       S EQUENTIAL  L EAST  SQ UARES  P ROGRAMMING
 C            TO SOLVE GENERAL NONLINEAR OPTIMIZATION PROBLEMS

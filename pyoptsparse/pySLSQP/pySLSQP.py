@@ -189,6 +189,27 @@ class SLSQP(Optimizer):
                 slsqp.pyflush(self.getOption("IOUT"))
                 return df, dg
 
+            # Initialize internal SLSQP state variables
+            alpha = np.array(0, float)
+            f0 = np.array(0, float)
+            gs = np.array(0, float)
+            h1 = np.array(0, float)
+            h2 = np.array(0, float)
+            h3 = np.array(0, float)
+            h4 = np.array(0, float)
+            t = np.array(0, float)
+            t0 = np.array(0, float)
+            tol = np.array(0, float)
+            iexact = np.array(0, int)
+            incons = np.array(0, int)
+            ireset = np.array(0, int)
+            itermx = np.array(0, int)
+            line = np.array(0, int)
+            n1 = np.array(0, int)
+            n2 = np.array(0, int)
+            n3 = np.array(0, int)
+
+
             # Setup argument list values
             la = max(m, 1)
             gg = np.zeros([la], np.float)
@@ -223,7 +244,8 @@ class SLSQP(Optimizer):
             # fmt: off
             slsqp.slsqp(m, meq, la, n, xs, blx, bux, ff, gg, df, dg, acc, maxit,
                         iprint, iout, ifile, mode, w, lw, jw, ljw, nfunc,
-                        ngrad, slfunc, slgrad)
+                        ngrad,alpha,f0,gs,h1,h2,h3,h4,t,t0,tol,
+                        iexact,incons,ireset,itermx,line,n1,n2,n3,slfunc, slgrad)
             # fmt: on
             optTime = time.time() - t0
 

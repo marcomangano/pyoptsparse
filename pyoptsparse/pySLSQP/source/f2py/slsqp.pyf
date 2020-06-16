@@ -27,7 +27,7 @@ python module slsqp__user__routines
 end python module slsqp__user__routines
 python module slsqp ! in 
     interface  ! in :slsqp
-        subroutine slsqp(m,meq,la,n,x,xl,xu,f,c,g,a,acc,iter,iprint,iout,ifile,mode,w,l_w,jw,l_jw,nfunc,ngrad,slfunc,slgrad) ! in :slsqp:source/slsqp.f
+        subroutine slsqp(m,meq,la,n,x,xl,xu,f,c,g,a,acc,iter,iprint,iout,ifile,mode,w,l_w,jw,l_jw,nfunc,ngrad,alpha,f0,gs,h1,h2,h3,h4,t,t0,tol,iexact,incons,ireset,itermx,line,n1,n2,n3,slfunc,slgrad) ! in :slsqp:source/slsqp.f
             use slsqp__user__routines
             integer intent(in) :: m
             integer intent(in) :: meq
@@ -52,6 +52,24 @@ python module slsqp ! in
             integer intent(in) :: l_jw
             integer intent(inout) :: nfunc
             integer intent(inout) :: ngrad
+            double precision, intent(inout) :: alpha
+            double precision, intent(inout) :: f0
+            double precision, intent(inout) :: gs
+            double precision, intent(inout) :: h1
+            double precision, intent(inout) :: h2
+            double precision, intent(inout) :: h3
+            double precision, intent(inout) :: h4
+            double precision, intent(inout) :: t
+            double precision, intent(inout) :: t0
+            double precision, intent(inout) :: tol
+            integer, intent(inout) :: iexact
+            integer, intent(inout) :: incons
+            integer, intent(inout) :: ireset
+            integer, intent(inout) :: itermx
+            integer, intent(inout) :: line
+            integer, intent(inout) :: n1
+            integer, intent(inout) :: n2
+            integer, intent(inout) :: n3
             external slfunc
             external slgrad
         end subroutine slsqp

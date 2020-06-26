@@ -16,10 +16,10 @@ An example output from OptView is shown below.
 ## Optimizer Support
 pyOptSparse provides Python interfaces for a number of optimizers.
 ALPSO, CONMIN, IPOPT, NLPQLP, NSGA2, PSQP, SLSQP, ParOpt and SNOPT are currently tested and supported.
-FSQP, AUGLAG, and NOMAD interfaces are also provided, but they are not tested nor supported.
+NOMAD interface is also provided, but it is not tested nor supported.
 
 We do not provide the source code for SNOPT and NLPQLP, due to their restrictive license requirements.
-Please contact the authors of the respective codes if you wish to obtain them.
+Please contact the authors of the respective optimizers if you wish to obtain them.
 Furthermore, ParOpt and IPOPT are available as a open source package but must be installed separately.
 Please see the documentation page of each optimizer for purchase and installation instructions.
 
@@ -57,4 +57,12 @@ doi:10.1007/s00158-011-0666-3.
 ```
 
 ## License
-Copyright 2020 MDO Lab. See the LICENSE file for details.
+pyOptSparse is licensed under the  Apache License 2.0.
+See `LICENSE` for the full license.
+
+## Copyright
+Copyright (c) 2011 University of Toronto\
+Copyright (c) 2014 University of Michigan\
+Additional copyright (c) 2014 Gaetan K. W. Kenway, Ruben Perez, Charles A. Mader, and\
+Joaquim R. R. A. Martins\
+All rights reserved.

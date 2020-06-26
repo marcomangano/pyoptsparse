@@ -1,6 +1,6 @@
 # /bin/env python
 """pyNLPQLP - A pyOptSparse wrapper for Schittkowski's NLPQLP
-optimizion algorithm.
+optimization algorithm.
 """
 # =============================================================================
 # NLPQL Library
@@ -36,13 +36,13 @@ class NLPQLP(Optimizer):
     NLPQL Optimizer Class - Inherited from Optimizer Abstract Class
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, raiseError=True, *args, **kwargs):
         name = "NLPQLP"
         category = "Local Optimizer"
-        defOpts = {
+        self.defOpts = {
             # NLPQL Options
-            "accuracy": [float, 1e-6],  # Convergence Accurancy
-            "accuracyQP": [float, 1e-14],  # Convergence Accurancy for QP
+            "accuracy": [float, 1e-6],  # Convergence accuracy
+            "accuracyQP": [float, 1e-14],  # Convergence accuracy for QP
             "stepMin": [float, 1e-6],  # Minimum step length
             "maxFun": [int, 20],  # Maximum Number of Function Calls During Line Search
             "maxIt": [int, 500],  # Maximum Number of Iterations
@@ -55,12 +55,16 @@ class NLPQLP(Optimizer):
             "lQl": [bool, False],  # QP Subproblem Solver (True - Quasi-Newton, False - Cholesky)
             "iFile": [str, "NLPQLP.out"],  # Output File Name
         }
-        informs = {
-            -2: "Compute gradient values w.r.t. the variables stored in"
-            " first column of X, and store them in DF and DG."
-            " Only derivatives for active constraints ACTIVE(J)=.TRUE. need to be computed.",
-            -1: "Compute objective fn and all constraint values subject"
-            "the variables found in the first L columns of X, and store them in F and G.",
+        self.informs = {
+            -2: (
+                "Compute gradient values w.r.t. the variables stored in"
+                + " first column of X, and store them in DF and DG."
+                + " Only derivatives for active constraints ACTIVE(J)=.TRUE. need to be computed."
+            ),
+            -1: (
+                "Compute objective fn and all constraint values subject"
+                + "the variables found in the first L columns of X, and store them in F and G."
+            ),
             0: "The optimality conditions are satisfied.",
             1: " The algorithm has been stopped after MAXIT iterations.",
             2: " The algorithm computed an uphill search direction.",
@@ -72,15 +76,18 @@ class NLPQLP(Optimizer):
             8: "The starting point violates a lower or upper bound.",
             9: "Wrong input parameter, i.e., MODE, LDL decomposition in D and C (in case of MODE=1), IPRINT, IOUT",
             10: "Internal inconsistency of the quadratic subproblem, division by zero.",
-            100: "The solution of the quadratic programming subproblem has been"
-            " terminated with an error message and IFAIL is set to IFQL+100,"
-            " where IFQL denotes the index of an inconsistent constraint.",
+            100: (
+                "The solution of the quadratic programming subproblem has been"
+                + " terminated with an error message and IFAIL is set to IFQL+100,"
+                + " where IFQL denotes the index of an inconsistent constraint."
+            ),
         }
         if nlpqlp is None:
-            raise Error("There was an error importing the compiled nlpqlp module")
+            if raiseError:
+                raise Error("There was an error importing the compiled nlpqlp module")
 
-        Optimizer.__init__(self, name, category, defOpts, informs, *args, **kwargs)
-        # NLPQLP needs jacobians in dense format
+        Optimizer.__init__(self, name, category, self.defOpts, self.informs, *args, **kwargs)
+        # NLPQLP needs Jacobians in dense format
         self.jacType = "dense2d"
 
     def __call__(
@@ -97,9 +104,9 @@ class NLPQLP(Optimizer):
             to be solved by the optimizer
 
         sens : str or python Function.
-            Specifiy method to compute sensitivities. To
-            explictly use pyOptSparse gradient class to do the
-            derivatives with finite differenes use 'FD'. 'sens'
+            Specify method to compute sensitivities. To
+            explicitly use pyOptSparse gradient class to do the
+            derivatives with finite differences use 'FD'. 'sens'
             may also be 'CS' which will cause pyOptSpare to compute
             the derivatives using the complex step method. Finally,
             'sens' may be a python function handle which is expected
@@ -122,7 +129,7 @@ class NLPQLP(Optimizer):
 
         hotStart : str
             File name of the history file to "replay" for the
-            optimziation.  The optimization problem used to generate
+            optimization.  The optimization problem used to generate
             the history file specified in 'hotStart' must be
             **IDENTICAL** to the currently supplied 'optProb'. By
             identical we mean, **EVERY SINGLE PARAMETER MUST BE
@@ -131,9 +138,9 @@ class NLPQLP(Optimizer):
             gradient evaluations revert back to normal evaluations.
 
         storeSens : bool
-            Flag sepcifying if sensitivities are to be stored in hist.
-            This is necessay for hot-starting only.
-            """
+            Flag specifying if sensitivities are to be stored in hist.
+            This is necessary for hot-starting only.
+        """
 
         self.callCounter = 0
         self.storeSens = storeSens
@@ -143,7 +150,7 @@ class NLPQLP(Optimizer):
             optProb.dummyConstraint = False
 
         # Save the optimization problem and finalize constraint
-        # jacobian, in general can only do on root proc
+        # Jacobian, in general can only do on root proc
         self.optProb = optProb
         self.optProb.finalizeDesignVariables()
         self.optProb.finalizeConstraints()

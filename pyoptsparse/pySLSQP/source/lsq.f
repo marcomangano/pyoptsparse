@@ -204,3 +204,16 @@ c   set rest of the multipliers to nan (they are not used)
 C   END OF SUBROUTINE LSQ
 
       END
+
+      subroutine bound(n, x, xl, xu)
+      integer n, i
+      double precision x(n), xl(n), xu(n)
+      do i = 1, n
+C        Note that xl(i) and xu(i) may be NaN to indicate no bound
+         if(xl(i).eq.xl(i).and.x(i) < xl(i))then
+            x(i) = xl(i)
+         else if(xu(i).eq.xu(i).and.x(i) > xu(i))then
+            x(i) = xu(i)
+            end if
+         end do
+         end subroutine bound

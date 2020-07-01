@@ -53,7 +53,7 @@ C  TRANSFORM G AND H TO GET LEAST DISTANCE PROBLEM
       MODE=5
       DO 30 I=1,MG
           DO 20 J=1,N
-              IF (ABS(E(J,J)).LT.EPMACH) GOTO 50
+              IF (.NOT.(ABS(E(J,J)).GE.EPMACH)) GOTO 50
    20         G(I,J)=(G(I,J)-DDOT(J-1,G(I,1),LG,E(1,J),1))/E(J,J)
    30     H(I)=H(I)-DDOT(N,G(I,1),LG,F,1)
 

@@ -1,4 +1,4 @@
-      SUBROUTINE LSQ(M,MEQ,N,NL,LA,L,G,A,B,XL,XU,X,Y,W,JW,MODE)
+      SUBROUTINE LSQ(m,meq,n,nl,la,l,g,a,b,xl,xu,x,y,w,jw,mode)
 
 C   MINIMIZE with respect to X
 
@@ -41,144 +41,166 @@ C               7: RANK DEFECT IN HFTI
 c     coded            Dieter Kraft, april 1987
 c     revised                        march 1989
 
-      DOUBLE PRECISION L,G,A,B,W,XL,XU,X,Y,
-     .                 DIAG,ZERO,ONE,DDOT,XNORM
+      DOUBLE PRECISION l,g,a,b,w,xl,xu,x,y,
+     .                 diag,ZERO,one,DDOT,xnorm
 
-      INTEGER          JW(*),I,IC,ID,IE,IF,IG,IH,IL,IM,IP,IU,IW,
-     .                 I1,I2,I3,I4,LA,M,MEQ,MINEQ,MODE,M1,N,NL,N1,N2,N3
+      INTEGER          jw(*),i,ic,id,ie,IF,ig,ih,il,im,ip,iu,iw,
+     .     i1,i2,i3,i4,la,m,meq,mineq,mode,m1,n,nl,n1,n2,n3,
+     .     nancnt,j
 
-      DIMENSION        A(LA,N), B(LA), G(N), L(NL),
-     .                 W(*), X(N), XL(N), XU(N), Y(M+N+N)
+      DIMENSION        a(la,n), b(la), g(n), l(nl),
+     .                 w(*), x(n), xl(n), xu(n), y(m+n+n)
 
-      DATA             ZERO/0.0D0/, ONE/1.0D0/
+      DATA             ZERO/0.0d0/, one/1.0d0/
 
-      N1 = N + 1
-      MINEQ = M - MEQ
-      M1 = MINEQ + N + N
+      n1 = n + 1
+      mineq = m - meq
+      m1 = mineq + n + n
 
 c  determine whether to solve problem
 c  with inconsistent linerarization (n2=1)
 c  or not (n2=0)
 
-      N2 = N1*N/2 + 1
-      IF (N2.EQ.NL) THEN
-          N2 = 0
+      n2 = n1*n/2 + 1
+      IF (n2.EQ.nl) THEN
+          n2 = 0
       ELSE
-          N2 = 1
+          n2 = 1
       ENDIF
-      N3 = N-N2
+      n3 = n-n2
 
 C  RECOVER MATRIX E AND VECTOR F FROM L AND G
 
-      I2 = 1
-      I3 = 1
-      I4 = 1
-      IE = 1
-      IF = N*N+1
-      DO 10 I=1,N3
-         I1 = N1-I
-         DIAG = SQRT (L(I2))
-         W(I3) = ZERO
-         CALL DCOPY (I1  ,  W(I3), 0, W(I3), 1)
-         CALL DCOPY (I1-N2, L(I2), 1, W(I3), N)
-         CALL DSCAL (I1-N2,     DIAG, W(I3), N)
-         W(I3) = DIAG
-         W(IF-1+I) = (G(I) - DDOT (I-1, W(I4), 1, W(IF), 1))/DIAG
-         I2 = I2 + I1 - N2
-         I3 = I3 + N1
-         I4 = I4 + N
+      i2 = 1
+      i3 = 1
+      i4 = 1
+      ie = 1
+      IF = n*n+1
+      DO 10 i=1,n3
+         i1 = n1-i
+         diag = SQRT (l(i2))
+         w(i3) = ZERO
+         CALL DCOPY (i1  ,  w(i3), 0, w(i3), 1)
+         CALL DCOPY (i1-n2, l(i2), 1, w(i3), n)
+         CALL DSCAL (i1-n2,     diag, w(i3), n)
+         w(i3) = diag
+         w(IF-1+i) = (g(i) - DDOT (i-1, w(i4), 1, w(IF), 1))/diag
+         i2 = i2 + i1 - n2
+         i3 = i3 + n1
+         i4 = i4 + n
    10 CONTINUE
-      IF (N2.EQ.1) THEN
-          W(I3) = L(NL)
-          W(I4) = ZERO
-          CALL DCOPY (N3, W(I4), 0, W(I4), 1)
-          W(IF-1+N) = ZERO
+      IF (n2.EQ.1) THEN
+          w(i3) = l(nl)
+          w(i4) = ZERO
+          CALL DCOPY (n3, w(i4), 0, w(i4), 1)
+          w(IF-1+n) = ZERO
       ENDIF
-      CALL DSCAL (N, - ONE, W(IF), 1)
+      CALL DSCAL (n, - one, w(IF), 1)
 
-      IC = IF + N
-      ID = IC + MEQ*N
+      ic = IF + n
+      id = ic + meq*n
 
-      IF (MEQ .GT. 0) THEN
+      IF (meq .GT. 0) THEN
 
 C  RECOVER MATRIX C FROM UPPER PART OF A
 
-          DO 20 I=1,MEQ
-              CALL DCOPY (N, A(I,1), LA, W(IC-1+I), MEQ)
+          DO 20 i=1,meq
+              CALL DCOPY (n, a(i,1), la, w(ic-1+i), meq)
    20     CONTINUE
 
 C  RECOVER VECTOR D FROM UPPER PART OF B
 
-          CALL DCOPY (MEQ, B(1), 1, W(ID), 1)
-          CALL DSCAL (MEQ,   - ONE, W(ID), 1)
+          CALL DCOPY (meq, b(1), 1, w(id), 1)
+          CALL DSCAL (meq,   - one, w(id), 1)
 
       ENDIF
 
-      IG = ID + MEQ
-
-      IF (MINEQ .GT. 0) THEN
+      ig = id + meq
 
 C  RECOVER MATRIX G FROM LOWER PART OF A
+C  The matrix G(mineq+2*n,m1) is stored at w(ig)
+C  Not all rows will be filled if some of the upper/lower
+C  bounds are unbounded.
 
-          DO 30 I=1,MINEQ
-              CALL DCOPY (N, A(MEQ+I,1), LA, W(IG-1+I), M1)
+      IF (mineq .GT. 0) THEN
+
+          DO 30 i=1,mineq
+              CALL DCOPY (n, a(meq+i,1), la, w(ig-1+i), m1)
    30     CONTINUE
 
       ENDIF
 
-C  AUGMENT MATRIX G BY +I AND -I
+      ih = ig + m1*n
+      iw = ih + mineq + 2*n
 
-      IP = IG + MINEQ
-      DO 40 I=1,N
-         W(IP-1+I) = ZERO
-         CALL DCOPY (N, W(IP-1+I), 0, W(IP-1+I), M1)
-   40 CONTINUE
-      W(IP) = ONE
-      CALL DCOPY (N, W(IP), 0, W(IP), M1+1)
-
-      IM = IP + N
-      DO 50 I=1,N
-         W(IM-1+I) = ZERO
-         CALL DCOPY (N, W(IM-1+I), 0, W(IM-1+I), M1)
-   50 CONTINUE
-      W(IM) = -ONE
-      CALL DCOPY (N, W(IM), 0, W(IM), M1+1)
-
-      IH = IG + M1*N
-
-      IF (MINEQ .GT. 0) THEN
+      IF (mineq .GT. 0) THEN
 
 C  RECOVER H FROM LOWER PART OF B
+C  The vector H(mineq+2*n) is stored at w(ih)
 
-          CALL DCOPY (MINEQ, B(MEQ+1), 1, W(IH), 1)
-          CALL DSCAL (MINEQ,       - ONE, W(IH), 1)
+          CALL DCOPY (mineq, b(meq+1), 1, w(ih), 1)
+          CALL DSCAL (mineq,       - one, w(ih), 1)
 
       ENDIF
 
+C  AUGMENT MATRIX G BY +I AND -I, AND,
 C  AUGMENT VECTOR H BY XL AND XU
+C  NaN value indicates no bound
 
-      IL = IH + MINEQ
-      CALL DCOPY (N, XL, 1, W(IL), 1)
-      IU = IL + N
-      CALL DCOPY (N, XU, 1, W(IU), 1)
-      CALL DSCAL (N, - ONE, W(IU), 1)
+      ip = ig + mineq
+      il = ih + mineq
+      nancnt = 0
 
-      IW = IU + N
+      DO 40 i=1,n
+         if (xl(i).eq.xl(i)) then
+            w(il) = xl(i)
+            do 41 j=1,n
+               w(ip + m1*(j-1)) = 0
+ 41         continue
+            w(ip + m1*(i-1)) = 1
+            ip = ip + 1
+            il = il + 1
+         else
+            nancnt = nancnt + 1
+         end if
+   40 CONTINUE
 
-      CALL LSEI (W(IC), W(ID), W(IE), W(IF), W(IG), W(IH), MAX(1,MEQ),
-     .           MEQ, N, N, M1, M1, N, X, XNORM, W(IW), JW, MODE)
+      DO 50 i=1,n
+         if (xu(i).eq.xu(i)) then
+            w(il) = -xu(i)
+            do 51 j=1,n
+               w(ip + m1*(j-1)) = 0
+ 51         continue
+            w(ip + m1*(i-1)) = -1
+            ip = ip + 1
+            il = il + 1
+         else
+            nancnt = nancnt + 1
+         end if
+ 50   CONTINUE
 
-      IF (MODE .EQ. 1) THEN
+      CALL LSEI (w(ic), w(id), w(ie), w(IF), w(ig), w(ih), MAX(1,meq),
+     .           meq, n, n, m1, m1-nancnt, n, x, xnorm, w(iw), jw, mode)
 
-c   restore Lagrange multipliers
+      IF (mode .EQ. 1) THEN
 
-          CALL DCOPY (M,  W(IW),     1, Y(1),      1)
-          CALL DCOPY (N3, W(IW+M),   1, Y(M+1),    1)
-          CALL DCOPY (N3, W(IW+M+N), 1, Y(M+N3+1), 1)
+c   restore Lagrange multipliers (only for user-defined variables)
+
+          CALL DCOPY (m,  w(iw),     1, y(1),      1)
+
+c   set rest of the multipliers to nan (they are not used)
+
+          IF (n3 .GT. 0) THEN
+             y(m+1) = 0
+             y(m+1) = 0 / y(m+1)
+             do 60 i=m+2,m+n3+n3
+                y(i) = y(m+1)
+ 60          continue
+          ENDIF
 
       ENDIF
+      call bound(n, x, xl, xu)
 
 C   END OF SUBROUTINE LSQ
 
       END
-      

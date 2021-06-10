@@ -5,7 +5,11 @@ import os
 
 # External modules
 import numpy as np
-from sqlitedict import SqliteDict
+import sqlitedict
+
+sqlitedict.PICKLE_PROTOCOL = 4
+# print("sqliteprotocol", sqlitedict.PICKLE_PROTOCOL)
+# quit()
 
 # Local modules
 from .pyOpt_error import Error, pyOptSparseWarning
@@ -40,13 +44,13 @@ class History(object):
             # prevent old keys from "polluting" the new histrory
             if os.path.exists(fileName):
                 os.remove(fileName)
-            self.db = SqliteDict(fileName)
+            self.db = sqlitedict.SqliteDict(fileName)
             self.optProb = optProb
         elif self.flag == "r":
             if os.path.exists(fileName):
                 # we cast the db to OrderedDict so we do not have to
                 # manually close the underlying db at the end
-                self.db = OrderedDict(SqliteDict(fileName))
+                self.db = OrderedDict(sqlitedict.SqliteDict(fileName))
             else:
                 raise FileNotFoundError(
                     "The requested history file %s to open in read-only mode does not exist." % fileName
